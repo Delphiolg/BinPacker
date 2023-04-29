@@ -1,8 +1,8 @@
-﻿program Project1;
+﻿program BinPacker;
 
 uses
   Vcl.Forms,
-  Unit1 in 'Unit1.pas' {Form1},
+  MainUnit in 'MainUnit.pas' {Form1},
   OlgSlot in 'OlgSlot.pas',
   OlgSlotManager in 'OlgSlotManager.pas',
   OlgSlotNode in 'OlgSlotNode.pas',

@@ -1,4 +1,4 @@
-﻿unit Unit1;
+﻿unit MainUnit;
 
 interface
 
@@ -106,8 +106,8 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
 
-  OlgLogControl.Parent := Self;
-  OlgLogControl.Align := alRight;
+//  OlgLogControl.Parent := Self;
+//  OlgLogControl.Align := alRight;
 
   FSlotManager := TOlgSlotManager.Create(20, 20, 700, 600);
 
