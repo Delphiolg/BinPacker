@@ -30,7 +30,7 @@ type
 
       procedure Move(AX, AY: Integer);
 
-      property BoundsRect: TRect read FBoundsRect write FBoundsRect;
+      property BoundsRect: TRect read FBoundsRect;
       property Name: String read FName write FName;
 
       property Color: TColor read FColor write FColor;

@@ -9,30 +9,23 @@ uses
 
 type
 
-//  TOlgRect = record
-//    X, Y: Integer;
-//    W, H: Integer;
-//
-//    class function ToRect(AX, AY, AW, AH: Integer): TOlgRect; static;
-//    function FitsIn(ARect: TOlgRect): Boolean;
-//    function SameSizeAs(ARect: TOlgRect): Boolean;
-//  end;
-
   TOlgSlotNode = class;
 
   TOlgSlotNode = class
-  private
-    public
+    private
       FNodeL: TOlgSlotNode;
       FNodeR: TOlgSlotNode;
       FSlot: TOlgSlot;
       FFiled: Boolean;
-
-      function Insert(ASlot: TOlgSlot): TOlgSlotNode;
+    public
       constructor Create;
       destructor Destroy; override;
 
+      function Insert(ASlot: TOlgSlot): TOlgSlotNode;
+
       procedure SetRect(ALeft, ATop, AWidth, AHeight: Integer);
+
+      property Slot: TOlgSlot read FSlot;
 
   end;
 
@@ -79,14 +72,13 @@ begin
       Exit;
     end;
 
+//  if FFiled then
+//    begin
+//      Result := nil;
+//      Exit;
+//    end;
 
-  if FFiled then
-    begin
-      Result := nil;
-      Exit;
-    end;
-
-  if not ASlot.FitsIn(FSlot) then
+  if FFiled or not ASlot.FitsIn(FSlot) then
     begin
       Result := nil;
       Exit;
@@ -109,20 +101,12 @@ begin
     begin
       FNodeL.SetRect(FSlot.Left, FSlot.Top, ASlot.Width, FSlot.Height);
       FNodeR.SetRect(FSlot.Left + ASlot.Width, FSlot.Top, FSlot.Width - ASlot.Width, FSlot.Height)
-//
-//      FNodeL.FRect := TOlgRect.ToRect(FRect.X, FRect.Y, ARect.W, FRect.H);
-//      FNodeR.FRect := TOlgRect.ToRect(FRect.X + ARect.W, FRect.Y, FRect.W - ARect.W, FRect.H);
     end
 
   else
     begin
-
       FNodeL.SetRect(FSlot.Left, FSlot.Top, FSlot.Width, ASlot.Height);
       FNodeR.SetRect(FSlot.Left, FSlot.Top + ASlot.Height, FSlot.Width, FSlot.Height - ASlot.Height)
-
-
-//      FNodeL.FRect := TOlgRect.ToRect(FRect.X, FRect.Y, FRect.W, ARect.H);
-//      FNodeR.FRect := TOlgRect.ToRect(FRect.X, FRect.Y + ARect.H, FRect.W, FRect.H - ARect.H);
     end;
 
   Result := FNodeL.Insert(ASlot);
@@ -134,29 +118,6 @@ procedure TOlgSlotNode.SetRect(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   FSlot.SetRect(ALeft, ATop, AWidth, AHeight);
 end;
-
-//{=========================================================================================================================================}
-//{ TOlgRect }
-//{=========================================================================================================================================}
-//function TOlgRect.FitsIn(ARect: TOlgRect): Boolean;
-//begin
-//  Result := (W <= ARect.W) and (H <= ARect.H);
-//end;
-//
-//{=========================================================================================================================================}
-//function TOlgRect.SameSizeAs(ARect: TOlgRect): Boolean;
-//begin
-//  Result := (W = ARect.W) and (H = ARect.H);
-//end;
-//
-//{=========================================================================================================================================}
-//class function TOlgRect.ToRect(AX, AY, AW, AH: Integer): TOlgRect;
-//begin
-//  Result.X := AX;
-//  Result.Y := AY;
-//  Result.W := AW;
-//  Result.H := AH;
-//end;
 
 {=========================================================================================================================================}
 end.

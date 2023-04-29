@@ -3,7 +3,7 @@
 interface
 
 uses
-  SysUtils, Classes, Generics.Collections, Generics.Defaults, Types,
+  SysUtils, Classes, Generics.Collections, Generics.Defaults, Types, Graphics,
 
   OlgLogger, OlgSlot, OlgSlotNode;
 
@@ -11,15 +11,22 @@ type
   TOlgSlotManager = class
     private
       FSlots: TOlgSlots;
+
+      FBoundsRect: TRect;
+
+      FLeft: Integer;
+      FTop: Integer;
       FWidth: Integer;
       FHeight: Integer;
+
       FFilledArea: Integer;
       function GetTotalArea: Integer;
     public
-      constructor Create;
+      constructor Create; overload;
+      constructor Create(ALeft, ATop, AWidth, AHeight: Integer); overload;
       destructor Destroy; override;
 
-      procedure Add(AWidth, AHeight: Integer; AName: String);
+      procedure AddSlot(AWidth, AHeight: Integer; AColor: TColor; AName: String);
       procedure Clear;
 
       property Slots: TOlgSlots read FSlots;
@@ -38,8 +45,12 @@ type
       property FilledArea: Integer read FFilledArea;
       property TotalArea: Integer read GetTotalArea;
 
+      property Left: Integer read FLeft;
+      property Top: Integer read FTop;
       property Width: Integer read FWidth;
       property Height: Integer read FHeight;
+
+      property BoundsRect: TRect read FBoundsRect;
 
   end;
 
@@ -50,11 +61,22 @@ implementation
 {=========================================================================================================================================}
 constructor TOlgSlotManager.Create;
 begin
-  FSlots := TOlgSlots.Create;
+  Create(50, 50, 700, 500);
+end;
 
-  FWidth := 700;
-  FHeight := 500;
+{=========================================================================================================================================}
+constructor TOlgSlotManager.Create(ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  FSlots := TOlgSlots.Create;
   FFilledArea := 0;
+
+  FLeft := ALeft;
+  FTop := ATop;
+  FWidth := AWidth;
+  FHeight := AHeight;
+
+  FBoundsRect := Rect(FLeft, FTop, FLeft + FWidth, FTop + FHeight);
+
 end;
 
 {=========================================================================================================================================}
@@ -68,6 +90,45 @@ end;
 procedure TOlgSlotManager.Clear;
 begin
   FSlots.Clear;
+end;
+
+{=========================================================================================================================================}
+procedure TOlgSlotManager.AddSlot(AWidth, AHeight: Integer; AColor: TColor; AName: String);
+var Q: TOlgSlot;
+begin
+  Q := TOlgSlot.Create(FLeft, FTop, AWidth, AHeight);
+  Q.Name := AName;
+  Q.Color := AColor;
+
+  FSlots.Add(Q);
+
+end;
+
+{=========================================================================================================================================}
+procedure TOlgSlotManager.Place;
+var S: TOlgSlot;
+
+    StartNode: TOlgSlotNode;
+    Q: TOlgSlotNode;
+begin
+
+  FFilledArea := 0;
+
+  StartNode := TOlgSlotNode.Create;
+  StartNode.SetRect(FLeft, FTop, FWidth - FLeft, FHeight - FTop);
+
+  for S in FSlots do
+    begin
+      Q := StartNode.Insert(S);
+      if Q <> nil then
+        begin
+          S.Move(Q.Slot.Left, Q.Slot.Top);
+          FFilledArea := FFilledArea + Q.Slot.Width * Q.Slot.Height;
+        end;
+    end;
+
+  FreeAndNil(StartNode);
+
 end;
 
 {=========================================================================================================================================}
@@ -153,63 +214,6 @@ begin
       end
     )
   );
-end;
-
-{=========================================================================================================================================}
-procedure TOlgSlotManager.Place;
-var S: TOlgSlot;
-    X, Y: Integer;
-
-    StartNode: TOlgSlotNode;
-    Q: TOlgSlotNode;
-    //R: TOlgRect;
-begin
-
-  X := 10;
-  Y := 10;
-
-//  R := TOlgRect.ToRect(X, Y, FWidth - X, FHeight - Y);
-  FFilledArea := 0;
-
-  StartNode := TOlgSlotNode.Create();
-  StartNode.SetRect(X, Y, FWidth - X, FHeight - Y);
-
-  for S in FSlots do
-    begin
-      //R := TOlgRect.ToRect(0, 0, S.BoundsRect.Width, S.BoundsRect.Height);
-
-      Q := StartNode.Insert(S);
-      if Q <> nil then
-        begin
-//          S.BoundsRect := Rect(Q.FRect.X, Q.FRect.Y, Q.FRect.X + Q.FRect.W, Q.FRect.Y + Q.FRect.H);
-          S.Move(Q.FSlot.Left, Q.FSlot.Top);
-
-          FFilledArea := FFilledArea + Q.FSlot.Width * Q.FSlot.Height;
-
-//          OlgLog(Q.FRect.X);
-//          OlgLog(Q.FRect.Y);
-//          OlgLog(Q.FRect.W);
-//          OlgLog(Q.FRect.H);
-//          OlgLog('');
-        end;
-
-//      X := X + S.Width;
-    end;
-
-  FreeAndNil(StartNode);
-
-end;
-
-{=========================================================================================================================================}
-procedure TOlgSlotManager.Add(AWidth, AHeight: Integer; AName: String);
-var Q: TOlgSlot;
-begin
-  Q := TOlgSlot.Create(0, 0, AWidth, AHeight);
-  Q.Name := AName;
-  Q.Color := Random($00FFFF00);
-
-  FSlots.Add(Q);
-
 end;
 
 {=========================================================================================================================================}

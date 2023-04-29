@@ -54,7 +54,7 @@ begin
   for i := 1 to N do
     begin
       S := A[Random(Length(A))];
-      FSlotManager.Add(S.cx, S.cy, 'S' + IntToStr(i));
+      FSlotManager.AddSlot(S.cx, S.cy, Random($00FFFF00), 'S' + IntToStr(i));
     end;
 
     case RadioGroup1.ItemIndex of
@@ -85,7 +85,7 @@ begin
   OlgLogControl.Parent := Self;
   OlgLogControl.Align := alRight;
 
-  FSlotManager := TOlgSlotManager.Create;
+  FSlotManager := TOlgSlotManager.Create(20, 20, 700, 600);
 
   Button1.Click;
 end;
@@ -98,21 +98,18 @@ end;
 procedure TForm1.Paint;
 var S: TOlgSlot;
     R: TRect;
-    X, Y: Integer;
 begin
   inherited;
 
-  X := 10;
-  Y := 10;
-
   Canvas.Pen.Color := 0;
   Canvas.Brush.Color := $00FFFFFF;
-  Canvas.Rectangle(X, Y, FSlotManager.Width, FSlotManager.Height);
+  Canvas.Rectangle(FSlotManager.BoundsRect);
 
   for S in FSlotManager.Slots do
     begin
       Canvas.Brush.Color := S.Color;
       Canvas.Rectangle(S.BoundsRect);
+
       R := S.BoundsRect;
 
       DrawText(Canvas.Handle, S.Name, -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);

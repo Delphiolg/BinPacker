@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Form1'
-  ClientHeight = 576
+  ClientHeight = 659
   ClientWidth = 1190
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
