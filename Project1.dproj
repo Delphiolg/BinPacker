@@ -104,7 +104,7 @@
         </DCCReference>
         <DCCReference Include="OlgSlot.pas"/>
         <DCCReference Include="OlgSlotManager.pas"/>
-        <DCCReference Include="OlgNode.pas"/>
+        <DCCReference Include="OlgSlotNode.pas"/>
         <DCCReference Include="..\..\UI\OlgLogger.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

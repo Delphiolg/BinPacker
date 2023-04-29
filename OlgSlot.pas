@@ -10,18 +10,24 @@ type
   TOlgSlot = class
     private
       FBoundsRect: TRect;
+
       FLeft: Integer;
       FTop: Integer;
       FWidth: Integer;
       FHeight: Integer;
+
       FName: String;
       FColor: TColor;
     public
       constructor Create; overload;
-      constructor Create(AWidth, AHeight: Integer); overload;
+      constructor Create(ALeft, ATop, AWidth, AHeight: Integer); overload;
       destructor Destroy; override;
 
-      procedure Rotate;
+      function FitsIn(ARect: TOlgSlot): Boolean;
+      function SameSizeAs(ARect: TOlgSlot): Boolean;
+
+      procedure SetRect(ALeft, ATop, AWidth, AHeight: Integer);
+
       procedure Move(AX, AY: Integer);
 
       property BoundsRect: TRect read FBoundsRect write FBoundsRect;
@@ -29,6 +35,8 @@ type
 
       property Color: TColor read FColor write FColor;
 
+      property Left: Integer read FLeft;
+      property Top: Integer read FTop;
       property Width: Integer read FWidth;
       property Height: Integer read FHeight;
   end;
@@ -40,11 +48,13 @@ implementation
 {=========================================================================================================================================}
 { TOlgSlot }
 {=========================================================================================================================================}
-constructor TOlgSlot.Create(AWidth, AHeight: Integer);
+constructor TOlgSlot.Create(ALeft, ATop, AWidth, AHeight: Integer);
 begin
+  FLeft := ALeft;
+  FTop := ATop;
   FWidth := AWidth;
   FHeight := AHeight;
-  FBoundsRect := Rect(0, 0, AWidth, AHeight);
+  FBoundsRect := Rect(ALeft, ATop, AWidth, AHeight);
   FName := 'Unknown';
   FColor := $00FFFFFF;
 end;
@@ -52,7 +62,7 @@ end;
 {=========================================================================================================================================}
 constructor TOlgSlot.Create;
 begin
-  Create(100, 50);
+  Create(0, 0, 100, 50);
 end;
 
 {=========================================================================================================================================}
@@ -69,14 +79,25 @@ begin
 end;
 
 {=========================================================================================================================================}
-procedure TOlgSlot.Rotate;
-var Q: Integer;
+function TOlgSlot.SameSizeAs(ARect: TOlgSlot): Boolean;
 begin
+  Result := (FWidth = ARect.Width) and (FHeight = ARect.Height);
+end;
 
-  Q := FWidth;
-  FWidth := FHeight;
-  FHeight := Q;
+{=========================================================================================================================================}
+function TOlgSlot.FitsIn(ARect: TOlgSlot): Boolean;
+begin
+  Result := (FWidth <= ARect.Width) and (FHeight <= ARect.Height);
+end;
 
+{=========================================================================================================================================}
+procedure TOlgSlot.SetRect(ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  FLeft := ALeft;
+  FTop := ATop;
+  FWidth := AWidth;
+  FHeight := AHeight;
+  FBoundsRect := Rect(FLeft, FTop, FLeft + AWidth, FTop + AHeight);
 end;
 
 {=========================================================================================================================================}

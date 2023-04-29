@@ -5,7 +5,7 @@ uses
   Unit1 in 'Unit1.pas' {Form1},
   OlgSlot in 'OlgSlot.pas',
   OlgSlotManager in 'OlgSlotManager.pas',
-  OlgNode in 'OlgNode.pas',
+  OlgSlotNode in 'OlgSlotNode.pas',
   OlgLogger in '..\..\UI\OlgLogger.pas';
 
 {$R *.res}

@@ -5,7 +5,7 @@ interface
 uses
   SysUtils, Classes, Generics.Collections, Generics.Defaults, Types,
 
-  OlgLogger, OlgSlot, OlgNode;
+  OlgLogger, OlgSlot, OlgSlotNode;
 
 type
   TOlgSlotManager = class
@@ -160,32 +160,31 @@ procedure TOlgSlotManager.Place;
 var S: TOlgSlot;
     X, Y: Integer;
 
-    StartNode: TOlgNode;
-    Q: TOlgNode;
-    R: TOlgRect;
+    StartNode: TOlgSlotNode;
+    Q: TOlgSlotNode;
+    //R: TOlgRect;
 begin
 
   X := 10;
   Y := 10;
 
-  R := TOlgRect.ToRect(X, Y, FWidth - X, FHeight - Y);
+//  R := TOlgRect.ToRect(X, Y, FWidth - X, FHeight - Y);
   FFilledArea := 0;
 
-  StartNode := TOlgNode.Create;
-  StartNode.FRect := R;
+  StartNode := TOlgSlotNode.Create();
+  StartNode.SetRect(X, Y, FWidth - X, FHeight - Y);
 
   for S in FSlots do
     begin
-      R := TOlgRect.ToRect(0, 0, S.BoundsRect.Width, S.BoundsRect.Height);
+      //R := TOlgRect.ToRect(0, 0, S.BoundsRect.Width, S.BoundsRect.Height);
 
-      Q := StartNode.Insert(R);
+      Q := StartNode.Insert(S);
       if Q <> nil then
         begin
 //          S.BoundsRect := Rect(Q.FRect.X, Q.FRect.Y, Q.FRect.X + Q.FRect.W, Q.FRect.Y + Q.FRect.H);
-          S.Move(Q.FRect.X, Q.FRect.Y);
+          S.Move(Q.FSlot.Left, Q.FSlot.Top);
 
-          FFilledArea := FFilledArea + Q.FRect.W * Q.FRect.H;
-
+          FFilledArea := FFilledArea + Q.FSlot.Width * Q.FSlot.Height;
 
 //          OlgLog(Q.FRect.X);
 //          OlgLog(Q.FRect.Y);
@@ -205,7 +204,7 @@ end;
 procedure TOlgSlotManager.Add(AWidth, AHeight: Integer; AName: String);
 var Q: TOlgSlot;
 begin
-  Q := TOlgSlot.Create(AWidth, AHeight);
+  Q := TOlgSlot.Create(0, 0, AWidth, AHeight);
   Q.Name := AName;
   Q.Color := Random($00FFFF00);
 
