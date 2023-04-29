@@ -32,6 +32,7 @@ type
       property Slots: TOlgSlots read FSlots;
 
       procedure Place;
+      procedure Resize(AWidth, AHeight: Integer);
 
       procedure SortByWidthASC;
       procedure SortByHeightASC;
@@ -129,6 +130,14 @@ begin
 
   FreeAndNil(StartNode);
 
+end;
+
+{=========================================================================================================================================}
+procedure TOlgSlotManager.Resize(AWidth, AHeight: Integer);
+begin
+  FWidth := AWidth;
+  FHeight := AHeight;
+  FBoundsRect := Rect(FLeft, FTop, FLeft + AWidth, FTop + AHeight);
 end;
 
 {=========================================================================================================================================}
