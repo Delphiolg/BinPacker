@@ -1,4 +1,4 @@
-![Screenshot](../master/result.jpg)
+![Screenshot](result.jpg)
 
 https://blackpawn.com/texts/lightmaps/default.html <br>
 https://xdan.ru/2d-bin-packing-with-javascript.html <br>
